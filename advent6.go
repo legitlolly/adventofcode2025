@@ -81,14 +81,53 @@ func CalculateGridMath(grid [][]string) int {
 	return total
 }
 
-func LoadWeirdCephalopodReadingStyle(grid [][]string) [][]string {
-	fmt.Print(grid)
-	return grid
+func CephTranspose(grid [][]rune) [][]rune {
+	if len(grid) == 0 {
+		return nil
+	}
+
+	rows := len(grid)
+	cols := len(grid[0])
+	result := make([][]rune, cols)
+
+	for c := 0; c < cols; c++ {
+		col := make([]rune, rows)
+		for r := 0; r < rows; r++ {
+			col[r] = grid[r][c]
+		}
+		result[c] = col
+	}
+	return result
+}
+
+func LoadWeirdCephalopodReadingStyle(path string) [][]rune {
+	file, err := os.Open(path)
+	errHandler(err)
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	var grid [][]rune
+	for scanner.Scan() {
+		line := scanner.Text()
+		grid = append(grid, []rune(line))
+	}
+
+	return CephTranspose(grid)
+}
+
+func WeirdCephMath(grid [][]rune) int {
+	for i, r := range grid {
+		fmt.Printf("%c", r[0])
+		fmt.Printf("%d - %c (%v)\n", i, r, r)
+	}
+	return 0
 }
 
 func advent6() {
 	grid := LoadMathGrid("input6.txt")
 	total := CalculateGridMath(grid)
-	grid = LoadWeirdCephalopodReadingStyle(grid)
-	fmt.Print(total)
+	cephGrid := LoadWeirdCephalopodReadingStyle("input6.txt")
+	total2 := WeirdCephMath(cephGrid)
+	fmt.Print(total, total2)
 }
