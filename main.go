@@ -20,5 +20,5 @@ func main() {
 		Timer(advent4, 4)
 		Timer(advent5, 5)
 	*/
-	Timer(advent6(), 6)
+	Timer(advent6, 6)
 }
