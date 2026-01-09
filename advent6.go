@@ -90,7 +90,7 @@ func CephTranspose(grid [][]rune) [][]rune {
 	cols := len(grid[0])
 	result := make([][]rune, cols)
 
-	for c := 0; c < cols; c++ {
+	for c := range cols {
 		col := make([]rune, rows)
 		for r := 0; r < rows; r++ {
 			col[r] = grid[r][c]
@@ -117,11 +117,31 @@ func LoadWeirdCephalopodReadingStyle(path string) [][]rune {
 }
 
 func WeirdCephMath(grid [][]rune) int {
-	for i, r := range grid {
-		fmt.Printf("%c", r[0])
-		fmt.Printf("%d - %c (%v)\n", i, r, r)
+	finalIndex := len(grid[0]) - 1
+	var loopTotal int
+	var f func(x, y int) int
+
+	total := 0
+
+	for _, r := range grid {
+		if r[finalIndex] == '*' {
+			f = Multiply
+			loopTotal = 1
+		} else if r[finalIndex] == '+' {
+			f = Add
+			loopTotal = 0
+		}
+		cephString := strings.TrimSpace(string(r[:finalIndex]))
+		if cephString == "" {
+			total += loopTotal
+		} else {
+			cephValue, err := strconv.Atoi(strings.TrimSpace(string(r[:finalIndex])))
+			errHandler(err)
+			loopTotal = f(loopTotal, cephValue)
+		}
 	}
-	return 0
+	total += loopTotal
+	return total
 }
 
 func advent6() {
@@ -129,5 +149,5 @@ func advent6() {
 	total := CalculateGridMath(grid)
 	cephGrid := LoadWeirdCephalopodReadingStyle("input6.txt")
 	total2 := WeirdCephMath(cephGrid)
-	fmt.Print(total, total2)
+	fmt.Printf("ADVENT DAY 6\nPart 1 --> %d Part 2 --> %d\n", total, total2)
 }
